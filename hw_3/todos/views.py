@@ -1,44 +1,30 @@
-# hw_3/todos/views.py
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Todo
 from .forms import TodoForm
 
-def todos_list(request):
-    todos = Todo.objects.all()  # Fetch all todos from the database
-    return render(request, 'todos/todos_list.html', {'todos': todos})
+# List all Todos (GET todos/)
+def todo_list(request):
+    todos = Todo.objects.all()
+    return render(request, 'todos/todo_list.html', {'todos': todos})
 
-# GET /todos/:id
-def todo_detail(request, todo_id):
-    try:
-        todo = Todo.objects.get(id=todo_id)
-        return JsonResponse({"todo": {
-            "title": todo.title,
-            "description": todo.description,
-            "due_date": todo.due_date,
-            "status": todo.status
-        }})
-    except Todo.DoesNotExist:
-        return JsonResponse({"error": "Todo not found"}, status=404)
+# View a single Todo (GET todos/:id)
+def todo_detail(request, id):
+    todo = get_object_or_404(Todo, id=id)
+    return render(request, 'todos/todo_detail.html', {'todo': todo})
 
-# POST /todos/
-@csrf_exempt  # Use CSRF exempt for simplicity
-def todo_create(request):
+# Add a new Todo (POST todos/)
+def add_todo(request):
     if request.method == 'POST':
         form = TodoForm(request.POST)
         if form.is_valid():
             form.save()
-            return JsonResponse({"message": "Todo created successfully!"}, status=201)
-        else:
-            return JsonResponse({"error": "Invalid data"}, status=400)
-    return JsonResponse({"error": "POST method required"}, status=405)
+            return redirect('todo_list')
+    else:
+        form = TodoForm()
+    return render(request, 'todos/add_todo.html', {'form': form})
 
-# DELETE /todos/:id/delete
-def todo_delete(request, todo_id):
-    try:
-        todo = Todo.objects.get(id=todo_id)
-        todo.delete()
-        return redirect('todos:todos_list')  # Redirect to the main page
-    except Todo.DoesNotExist:
-        return JsonResponse({"error": "Todo not found"}, status=404)
+# Delete a Todo (DELETE todos/:id/delete)
+def delete_todo(request, id):
+    todo = get_object_or_404(Todo, id=id)
+    todo.delete()
+    return redirect('todo_list')

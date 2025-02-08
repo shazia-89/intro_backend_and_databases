@@ -1,4 +1,3 @@
-# hw_3/todos/forms.py
 from django import forms
 from .models import Todo
 

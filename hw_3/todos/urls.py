@@ -1,11 +1,9 @@
 from django.urls import path
 from . import views
 
-app_name = 'todos'
-
 urlpatterns = [
-    path('', views.todos_list, name='todos_list'),  # The list of todos
-    path('<int:todo_id>/', views.todo_detail, name='todo_detail'),
-    path('create/', views.todo_create, name='todo_create'),
-    path('<int:todo_id>/delete/', views.todo_delete, name='todo_delete'),
+    path('', views.todo_list, name='todo_list'),  # List all Todos
+    path('<int:id>/', views.todo_detail, name='todo_detail'),  # View a single Todo
+    path('add/', views.add_todo, name='add_todo'),  # Add a new Todo
+    path('<int:id>/delete/', views.delete_todo, name='delete_todo'),  # Delete a Todo
 ]

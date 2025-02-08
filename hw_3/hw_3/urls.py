@@ -1,23 +1,13 @@
-"""
-URL configuration for hw_3 project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+# Optional: Define a simple view to handle the root path
+def home(request):
+    return HttpResponse("<h1>Welcome to the Todo App</h1><p><a href='/todos/'>Go to Todos</a></p>")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('todos.urls')),  # Root URL should redirect here
+    path('todos/', include('todos.urls')),  # This is the route for the 'todos' app
+    path('', home),  # This is the route for the root URL
 ]

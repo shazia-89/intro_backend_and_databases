@@ -1,4 +1,3 @@
-# hw_3/todos/models.py
 from django.db import models
 
 class Todo(models.Model):
